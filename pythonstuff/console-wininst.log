@@ -1,0 +1,39 @@
+*** Installation started 2009/01/08 21:14 ***
+Source: C:\Users\grabanski\Desktop\console-1.1a1-20011229.win32-py2.5.exe
+999 Root Key: HKEY_LOCAL_MACHINE
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\console-py2.5]DisplayName=Python 2.5 console-1.1a1-20011229
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\console-py2.5]UninstallString="C:\Python25\Removeconsole.exe" -u "C:\Python25\console-wininst.log"
+200 File Copy: C:\Python25\Lib\site-packages\console-1.1a1_20011229-py2.5.egg-info
+200 File Copy: C:\Python25\Lib\site-packages\Console.py
+200 File Copy: C:\Python25\Lib\site-packages\_wincon.pyd
+100 Made Dir: C:\Python25\Scripts
+200 File Copy: C:\Python25\Scripts\demoAttributes.py
+200 File Copy: C:\Python25\Scripts\demoEvents.py
+200 File Copy: C:\Python25\Scripts\demoQueens.py
+200 File Copy: C:\Python25\Scripts\demoQueens.pyc
+200 File Copy: C:\Python25\Scripts\demoEvents.pyc
+200 File Copy: C:\Python25\Scripts\demoAttributes.pyc
+200 File Copy: C:\Python25\Lib\site-packages\Console.pyc
+200 File Copy: C:\Python25\Scripts\demoQueens.pyo
+200 File Copy: C:\Python25\Scripts\demoEvents.pyo
+200 File Copy: C:\Python25\Scripts\demoAttributes.pyo
+200 File Copy: C:\Python25\Lib\site-packages\Console.pyo
+*** Installation started 2009/01/08 21:14 ***
+Source: C:\Users\grabanski\Desktop\console-1.1a1-20011229.win32-py2.5.exe
+999 Root Key: HKEY_LOCAL_MACHINE
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\console-py2.5]DisplayName=Python 2.5 console-1.1a1-20011229
+040 Reg DB Value: [Software\Microsoft\Windows\CurrentVersion\Uninstall\console-py2.5]UninstallString="C:\Python25\Removeconsole.exe" -u "C:\Python25\console-wininst.log"
+200 File Copy: C:\Python25\Lib\site-packages\console-1.1a1_20011229-py2.5.egg-info
+200 File Copy: C:\Python25\Lib\site-packages\Console.py
+200 File Copy: C:\Python25\Lib\site-packages\_wincon.pyd
+200 File Copy: C:\Python25\Scripts\demoAttributes.py
+200 File Copy: C:\Python25\Scripts\demoEvents.py
+200 File Copy: C:\Python25\Scripts\demoQueens.py
+200 File Copy: C:\Python25\Scripts\demoQueens.pyc
+200 File Copy: C:\Python25\Scripts\demoEvents.pyc
+200 File Copy: C:\Python25\Scripts\demoAttributes.pyc
+200 File Copy: C:\Python25\Lib\site-packages\Console.pyc
+200 File Copy: C:\Python25\Scripts\demoQueens.pyo
+200 File Copy: C:\Python25\Scripts\demoEvents.pyo
+200 File Copy: C:\Python25\Scripts\demoAttributes.pyo
+200 File Copy: C:\Python25\Lib\site-packages\Console.pyo

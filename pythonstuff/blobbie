@@ -1,0 +1,40 @@
+from visual import *
+import pygame
+import rabbyt
+import os.path
+import math
+
+charframe = frame()
+charbody = sphere(frame = charframe, pos=(0,0,0), radius=0.5)
+charbody.color = (1,1,0)
+charlefteye = sphere(frame = charframe, pos=(0.1,0.1,.4), radius=0.1)
+charlefteye.color = (0,0,0)
+charighteye = sphere(frame = charframe, pos=(-0.1,0.1,.4), radius=0.1)
+charighteye.color = (0,0,0)
+charightarm = sphere(pos=(-0.6,0,.2), radius=0.15)
+charightarm.color = (1,1,0)
+charightarm.xvelo = 0
+charightarm.yvelo = 0
+charightarm.zvelo = 0
+charleftarm = sphere(pos=(0.6,0,.2), radius=0.15)
+charleftarm.color = (1,1,0)
+charleftarm.xvelo = 0
+charleftarm.yvelo = 0
+charleftarm.zvelo = 0
+dir = 0
+pygame.init()
+pygame.display.set_mode((640, 1), pygame.OPENGL | pygame.DOUBLEBUF)
+rabbyt.set_viewport((640, 1))
+rabbyt.set_default_attribs()
+while not pygame.event.get(pygame.QUIT):
+    rabbyt.clear((1,1,1))
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_RIGHT] == True:
+        dir = dir + 0.1
+    if pressed[pygame.K_LEFT] == True:
+        dir = dir - 0.1
+    diradians = math.radians(dir) 
+    charframe.axis = (math.cos(diradians), 0, math.sin(diradians))
+    charightarm.xvelo = charightarm.xvelo + ((math.cos(diradians)*-0.6)-charightarm.x)/25
+    pygame.display.flip()
+    

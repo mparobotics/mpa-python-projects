@@ -1,0 +1,8 @@
+class aweirdo:
+    while True:
+        print "Im a weirdo"
+class question:
+    while True:
+        print "I have a question"
+x = aweirdo
+y = question

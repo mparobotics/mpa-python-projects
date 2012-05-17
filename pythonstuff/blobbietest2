@@ -1,0 +1,117 @@
+from visual import *
+import pygame
+import rabbyt
+import os.path
+import math
+
+charframe = frame()
+charbody = sphere(frame = charframe, pos=(0,0,0), radius=0.5)
+charbody.color = (1,1,0)
+charlefteye = sphere(frame = charframe, pos=(0.1,0.1,.4), radius=0.1)
+charlefteye.color = (0,0,0)
+charighteye = sphere(frame = charframe, pos=(-0.1,0.1,.4), radius=0.1)
+charighteye.color = (0,0,0)
+charightarm = sphere(pos=(-0.6,0,.2), radius=0.15)
+charightarm.color = (1,1,0)
+charightarm.xvelo = 0
+charightarm.yvelo = 0
+charightarm.zvelo = 0
+charleftarm = sphere(pos=(0.6,0,.2), radius=0.15)
+charleftarm.color = (1,1,0)
+charleftarm.xvelo = 0
+charleftarm.yvelo = 0
+charleftarm.zvelo = 0
+block = box(pos=(0,-1,0), length=1, height=1, width=1, color = (1,1,1))
+charframe.y = 5
+dir = 0
+camdir = 0
+blinktmr = 0
+pygame.init()
+pygame.display.set_mode((640, 1), pygame.OPENGL | pygame.DOUBLEBUF)
+rabbyt.set_viewport((640, 1))
+rabbyt.set_default_attribs()
+charframe.grav = 0
+scene.autocenter = 0
+scene.autoscale = 0
+scene.scale = (10,10,10)
+camxvelo = 0
+camyvelo = 0
+camzvelo = 0
+camx = 0
+camy = 0
+camz = 0
+while not pygame.event.get(pygame.QUIT):
+    rabbyt.clear((1,1,1))
+    
+    # Get the keys pressed
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_RIGHT] == True:
+        dir = dir + 1
+        camdir = camdir - 1
+    if pressed[pygame.K_LEFT] == True:
+        dir = dir - 1
+        camdir = camdir + 1
+    diradians = math.radians(dir)
+    camdiradians = math.radians(dir+90)
+    movediradians = math.radians(camdir)
+    if pressed[pygame.K_UP] == True:
+        charframe.x = charframe.x + (math.sin(movediradians)) * .05
+        charframe.z = charframe.z + (math.cos(movediradians)) * .05
+    if charframe.y>0:
+        charframe.grav = charframe.grav - .005
+    if charframe.y<0:
+        charframe.grav = 0
+        charframe.y = -0.1
+        if pressed[pygame.K_SPACE]:
+            charframe.grav = .1
+    charframe.y = charframe.y + charframe.grav
+
+    #blinking scripts
+    blinktmr = blinktmr + 1
+    if blinktmr>140 and blinktmr<160:
+        charighteye.z = .2
+        charlefteye.z = .2
+    if blinktmr>160:
+        charighteye.z = .4
+        charlefteye.z = .4
+        blinktmr = 0
+        
+    # set the general character direction
+    charframe.axis = (math.cos(diradians), 0, math.sin(diradians))
+
+    # move the arms
+    charightarm.xvelo = charightarm.xvelo + charframe.x+((math.cos(diradians)*-0.6)-charightarm.x)/400
+    charightarm.zvelo = charightarm.zvelo + charframe.z+((math.sin(diradians)*-0.6)-charightarm.z)/400
+    charightarm.yvelo = charightarm.yvelo + (charframe.y - charightarm.y)/400
+    charightarm.x = charightarm.x + charightarm.xvelo
+    charightarm.z = charightarm.z + charightarm.zvelo
+    charightarm.y = charightarm.y + charightarm.yvelo
+    charightarm.zvelo = charightarm.zvelo * .99
+    charightarm.xvelo = charightarm.xvelo * .99
+    charightarm.yvelo = charightarm.yvelo * .99
+    charleftarm.xvelo = charleftarm.xvelo + charframe.x+((math.cos(diradians)*0.6)-charleftarm.x)/400
+    charleftarm.zvelo = charleftarm.zvelo + charframe.z+((math.sin(diradians)*0.6)-charleftarm.z)/400
+    charleftarm.yvelo = charleftarm.yvelo + (charframe.y - charleftarm.y)/400
+    charleftarm.x = charleftarm.x + charleftarm.xvelo
+    charleftarm.z = charleftarm.z + charleftarm.zvelo
+    charleftarm.y = charleftarm.y + charleftarm.yvelo
+    charleftarm.zvelo = charleftarm.zvelo * .99
+    charleftarm.xvelo = charleftarm.xvelo * .99
+    charleftarm.yvelo = charleftarm.yvelo * .99
+
+    #camera stuff
+    camxvelo = camxvelo + ((charframe.x - camx)) / 100
+    camyvelo = camyvelo + ((charframe.y - camy))/200
+    camzvelo = camzvelo + ((charframe.z - camz)) / 100
+    camx = camx + camxvelo
+    camz = camz + camzvelo
+    camy = camy + camyvelo
+    scene.center = (camx, camy, camz)
+    scene.forward = (charframe.x - camx, charframe.y - camy, charframe.z - camz)
+    camxvelo = camxvelo * .99
+    camyvelo = camyvelo * .98
+    camzvelo = camzvelo * .99
+    # refresh and limit the animation
+    pygame.display.flip()
+    rate(60)
+    

@@ -1,0 +1,6 @@
+n = 1
+num = 0
+while (n < 100):
+    num = num + ((1 + (1.0/n)) ** n)
+    n = n + 1
+    print num

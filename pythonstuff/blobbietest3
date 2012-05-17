@@ -1,0 +1,204 @@
+from visual import *
+import pygame
+import rabbyt
+import os.path
+import math
+
+#charframe initialization
+charframe = frame()
+charbody = sphere(frame = charframe, pos=(0,0,0), radius=0.5)
+charbody.color = (1,1,0)
+charlefteye = sphere(frame = charframe, pos=(0.19,0.1,.5), radius=0.12)
+charlefteye.color = (0,0,0)
+charighteye = sphere(frame = charframe, pos=(-0.19,0.1,.5), radius=0.12)
+charighteye.color = (0,0,0)
+
+#initialization of the arms
+charightarm = sphere(pos=(-0.6,0,.2), radius=0.2)
+charightarm.color = (1,1,0)
+charightarm.xvelo = 0
+charightarm.yvelo = 0
+charightarm.zvelo = 0
+charleftarm = sphere(pos=(0.6,0,.2), radius=0.2)
+charleftarm.color = (1,1,0)
+charleftarm.xvelo = 0
+charleftarm.yvelo = 0
+charleftarm.zvelo = 0
+
+#general initialization
+charframe.y = 5
+dir = 0
+camdir = 0
+blinktmr = 0
+
+#annoying pygame initialization (fixme! I don't want to use pygame!)
+pygame.init()
+pygame.display.set_mode((640, 1), pygame.OPENGL | pygame.DOUBLEBUF)
+rabbyt.set_viewport((640, 1))
+rabbyt.set_default_attribs()
+
+#more initialization
+charframe.grav = 0
+scene.autocenter = 0
+scene.autoscale = 0
+scene.scale = (10,10,10)
+scene.ambient = 0.7
+scene.background = (0,0,.5)
+camxvelo = 0
+camyvelo = 0
+camzvelo = 0
+camx = 0
+camy = 0
+camz = 0
+levelinfo = []
+levelnum = 1
+cycle = 0
+onground = 0
+levelbuffer = []
+charframe.prevx = 0
+charframe.prevy = 0
+charframe.prevz = 0
+blockvector = (0,0,0)
+
+
+def loadlevel(levelnum):
+    if (levelnum == 1):
+        levelbuffer = [(0.0, -4.0, 0.0), (1.0, -4.0, 0.0), (0.0, -4.0, -1.0), (1.0, -4.0, -1.0), (1.0, -2.0, -2.0), (1.0, 2.0, -2.0), (0.0, -2.0, -2.0), (0.0, -2.0, -3.0), (1.0, -2.0, -3.0), (1.0, 1.0, -4.0), (1.0, 1.0, -5.0), (1.0, 1.0, -6.0), (0.0, 1.0, -6.0), (0.0, 1.0, -7.0), (1.0, 1.0, -7.0), (2.0, 1.0, -7.0), (2.0, 1.0, -6.0), (-1.0, 1.0, -6.0), (-1.0, 1.0, -7.0), (-2.0, 1.0, -6.0), (-2.0, 1.0, -7.0), (-3.0, 1.0, -6.0), (-4.0, 1.0, -6.0), (-5.0, 1.0, -6.0), (-6.0, 3.0, -6.0), (-6.0, 3.0, -7.0), (-6.0, 3.0, -8.0), (-6.0, 3.0, -9.0)]
+    cycle = 0
+    levelinfo = []
+    while (cycle < len(levelbuffer)):
+        levelinfo.append(box(pos=(levelbuffer[cycle]), length=1, height=1, width=1, color = (.6,.6,.6)))
+        cycle = cycle + 1
+    return levelinfo
+        
+levelinfo = loadlevel(1)
+while not pygame.event.get(pygame.QUIT):
+    rabbyt.clear((1,1,1))
+    onground = 0
+
+    #Cycle through the blocks and find collisions
+    cycle = 0
+    # vector from the character to the camera
+    camvector = (charframe.x - camx, charframe.y - camy, charframe.z - camz)
+    camscalar = sqrt((camvector[0])**2 + (camvector[1])**2 + (camvector[2])**2)
+    camvector = (camvector[0] / camscalar, camvector[1] / camscalar, camvector[2] / camscalar)
+    
+    while (cycle < len(levelinfo)):
+        
+        #calculate the vector from the character to the block and calculate the scalar of that. Since the scalar is the same as the distance, we can do a collision check using that.
+        blockvector = (charframe.x - levelinfo[cycle].x, charframe.y - levelinfo[cycle].y, charframe.z - levelinfo[cycle].z)
+        blockscalar = sqrt((blockvector[0])**2 + (blockvector[1])**2 + (blockvector[2])**2)
+        
+        # do a bounding sphere check using the above knowledge
+        if (blockscalar < 2.62):
+            # do a bounding box check
+            if ((abs(blockvector[0]) < 1) and (abs(blockvector[1])<1) and (abs(blockvector[2])<1)):
+                # find out if the collision is with a ceiling/floor or a wall
+                if (abs(blockvector[1]) > abs(blockvector[0])) and (abs(blockvector[1]) > (blockvector[2])):
+                    # determine beetween a ceiling and a floor
+                    if (charframe.y > levelinfo[cycle].y):
+                        onground = 1
+                        charframe.y = levelinfo[cycle].y + 1
+                    else:
+                        onground = 0
+                        charframe.grav = abs(charframe.grav) * -.9
+                else:
+                    charframe.x = charframe.prevx
+                    charframe.z = charframe.prevz
+                    
+        #scale the blockvector to a unit vector
+        blockvector = (blockvector[0] / blockscalar, blockvector[1] / blockscalar, blockvector[2] / blockscalar)
+                                                                 
+        cycle = cycle + 1
+
+    
+    # Get the rotational key states
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_RIGHT] == True:
+        dir = dir + 2
+        camdir = camdir - 2
+    if pressed[pygame.K_LEFT] == True:
+        dir = dir - 2
+        camdir = camdir + 2
+
+    # get the directions converted to radians
+    diradians = math.radians(dir)
+    camdiradians = math.radians(dir+90)
+    movediradians = math.radians(camdir)
+
+    #store the previous position
+    charframe.prevx = charframe.x
+    charframe.prevy = charframe.y
+    charframe.prevz = charframe.z
+
+    # get other keys pressed and take action
+    if pressed[pygame.K_UP] == True:
+        charframe.x = charframe.x + (math.sin(movediradians)) * .1
+        charframe.z = charframe.z + (math.cos(movediradians)) * .1
+    if onground == 0:
+        charframe.grav = charframe.grav - .008
+    if onground == 1:
+        charframe.grav = 0
+        if pressed[pygame.K_DOWN] or pressed[pygame.K_SPACE]:
+            charframe.grav = .2
+    charframe.y = charframe.y + charframe.grav
+
+    # get the current object under the mouse, and print the mouse position on the object
+    
+
+    #blinking scripts
+    blinktmr = blinktmr + 1
+    if blinktmr>140 and blinktmr<160:
+        charighteye.z = .2
+        charlefteye.z = .2
+    if blinktmr>160:
+        charighteye.z = .5
+        charlefteye.z = .5
+        blinktmr = 0
+        
+    # set the general character direction
+    charframe.axis = (math.cos(diradians), 0, math.sin(diradians))
+
+    # move the arms
+    charightarm.xvelo = charightarm.xvelo + ((charframe.x+(math.cos(diradians)*-0.6))-charightarm.x)/200
+    charightarm.zvelo = charightarm.zvelo + ((charframe.z+(math.sin(diradians)*-0.6))-charightarm.z)/200
+    charightarm.yvelo = charightarm.yvelo + (charframe.y - charightarm.y)/200
+    charightarm.x = charightarm.x + charightarm.xvelo
+    charightarm.z = charightarm.z + charightarm.zvelo
+    charightarm.y = charightarm.y + charightarm.yvelo
+    charightarm.zvelo = charightarm.zvelo * .97
+    charightarm.xvelo = charightarm.xvelo * .97
+    charightarm.yvelo = charightarm.yvelo * .97
+    
+    charleftarm.xvelo = charleftarm.xvelo + ((charframe.x+(math.cos(diradians)*0.6))-charleftarm.x)/200
+    charleftarm.zvelo = charleftarm.zvelo + ((charframe.z+(math.sin(diradians)*0.6))-charleftarm.z)/200
+    charleftarm.yvelo = charleftarm.yvelo + (charframe.y - charleftarm.y)/200
+    charleftarm.x = charleftarm.x + charleftarm.xvelo
+    charleftarm.z = charleftarm.z + charleftarm.zvelo
+    charleftarm.y = charleftarm.y + charleftarm.yvelo
+    charleftarm.zvelo = charleftarm.zvelo * .97
+    charleftarm.xvelo = charleftarm.xvelo * .97
+    charleftarm.yvelo = charleftarm.yvelo * .97
+    
+    #camera stuff
+    camxvelo = camxvelo + ((charframe.x + (3 * math.cos(camdiradians)) - camx) / 25)
+    camyvelo = camyvelo + ((charframe.y - 2 - camy)/25)
+    camzvelo = camzvelo + ((charframe.z + (3 * math.sin(camdiradians)) - camz) / 25)
+
+    camx = camx + camxvelo
+    camz = camz + camzvelo
+    camy = camy + camyvelo
+
+    #change the camera state
+    scene.center = (charframe.x, charframe.y, charframe.z)
+    scene.forward = (camx - charframe.x, camy - charframe.y, camz - charframe.z)
+    scene.range = (3,3,3)
+    
+    camxvelo = camxvelo * .98
+    camyvelo = camyvelo * .98
+    camzvelo = camzvelo * .98
+    
+    # refresh and limit the animation
+    pygame.display.flip()
+    rate(30)
+    

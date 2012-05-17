@@ -1,0 +1,20 @@
+from visual import *
+import os.path
+import math
+
+scene.width = 640
+scene.height = 480
+scene.ambient  = .7
+scene.background = (0,0,.65)
+enemybody = sphere(pos=(0,0,0), radius = 0.5)
+enemybody.color = (1.1,1.1,1.1)
+enemyupperbody = sphere(pos=(0,.8,0), radius = .4)
+enemyupperbody.color = (1.1,1.1,1.1)
+enemylefteye = sphere(pos=(.2,.8,.4,) , radius = .1)
+enemylefteye.color = (0,0,0)
+enemyrighteye = sphere(pos=(-.2,.8,.4), radius = .1)
+enemyrighteye.color = (0,0,0)
+enemyrightarm = sphere(pos=(.8,.2,0), radius = 0.2)
+enemyrightarm.color = (1.1,1.1,1.1)
+enemyleftarm = sphere(pos=(-.8,.2,0), radius = 0.2)
+enemyrightarm.color = (1.1,1.1,1.1)
