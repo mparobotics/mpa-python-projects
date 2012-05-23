@@ -3,8 +3,8 @@ import os.path
 import math
 
 # set window attributes
-scene.width = 640
-scene.height = 480
+scene.width = 320
+scene.height = 240
 scene.fullscreen = 0
 
 #charframe initialization
